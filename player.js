@@ -1,65 +1,61 @@
-// Player.js - A simple music player
-
-class MusicPlayer {
-    constructor(tracks) {
-        this.tracks = tracks;
-        this.currentTrackIndex = 0;
-        this.isPlaying = false;
-        this.audio = new Audio();
-        this.updateTrack();
+class EnhancedMusicPlayer {
+    constructor() {
+        this.musicList = [];
+        this.init();
     }
 
-    updateTrack() {
-        this.audio.src = this.tracks[this.currentTrackIndex].source;
-        this.audio.load();
+    init() {
+        // Set up drag-and-drop area
+        const dropArea = document.getElementById('drop-area');
+        dropArea.addEventListener('dragover', this.handleDragOver.bind(this));
+        dropArea.addEventListener('drop', this.handleDrop.bind(this));
+
+        // Set up file input
+        const fileInput = document.getElementById('file-input');
+        fileInput.addEventListener('change', this.handleFileSelect.bind(this));
     }
 
-    play() {
-        this.audio.play();
-        this.isPlaying = true;
+    handleDragOver(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.dataTransfer.dropEffect = 'copy';
     }
 
-    pause() {
-        this.audio.pause();
-        this.isPlaying = false;
+    handleDrop(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const files = event.dataTransfer.files;
+        this.processFiles(files);
     }
 
-    next() {
-        this.currentTrackIndex = (this.currentTrackIndex + 1) % this.tracks.length;
-        this.updateTrack();
-        if (this.isPlaying) this.play();
+    handleFileSelect(event) {
+        const files = event.target.files;
+        this.processFiles(files);
     }
 
-    previous() {
-        this.currentTrackIndex = (this.currentTrackIndex - 1 + this.tracks.length) % this.tracks.length;
-        this.updateTrack();
-        if (this.isPlaying) this.play();
+    processFiles(files) {
+        for (const file of files) {
+            if (file.type.startsWith('audio/')) {
+                this.musicList.push(file);
+                this.loadMusic(file);
+            } else {
+                alert('Please upload audio files only.');
+            }
+        }
     }
 
-    updateProgressBar(progressBar) {
-        progressBar.value = (this.audio.currentTime / this.audio.duration) * 100;
+    loadMusic(file) {
+        const audioUrl = URL.createObjectURL(file);
+        const audioElement = new Audio(audioUrl);
+        audioElement.controls = true;
+        document.getElementById('music-player').appendChild(audioElement);
     }
 
-    displayLyrics(lyricsElement) {
-        lyricsElement.innerText = this.tracks[this.currentTrackIndex].lyrics;
+    manageMusicList() {
+        // Implementation for managing the music list (e.g., displaying, deleting tracks)
     }
+
+    // Additional interactive features implementation can be added here
 }
 
-// Example usage:
-const tracks = [
-    { source: 'track1.mp3', lyrics: 'Lyrics for track 1' },
-    { source: 'track2.mp3', lyrics: 'Lyrics for track 2' }, 
-    // Add more tracks here
-];
-
-const player = new MusicPlayer(tracks);
-
-// HTML integration example:
-// <button onclick='player.play()'>Play</button>
-// <button onclick='player.pause()'>Pause</button>
-// <button onclick='player.next()'>Next</button>
-// <button onclick='player.previous()'>Previous</button>
-// <progress id="progressBar"></progress>
-// <div id="lyrics"></div>
-// setInterval(() => player.updateProgressBar(document.getElementById('progressBar')), 1000);
-// player.displayLyrics(document.getElementById('lyrics'));
+const musicPlayer = new EnhancedMusicPlayer();
