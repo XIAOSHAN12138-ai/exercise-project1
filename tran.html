@@ -4,55 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Player</title>
-    <link rel="stylesheet" href="./tran.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f4f4f4;
+        }
+        #music-player {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: inline-block;
+            margin-top: 50px;
+        }
+        #upload-area {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            cursor: pointer;
+        }
+        #music-list {
+            margin-top: 20px;
+            list-style-type: none;
+            padding: 0;
+        }
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- 图片轮播 -->
-        <div class="shell">
-            <div class="content">
-                <div class="item"></div>
-                <div class="item"></div>
-                <div class="item"></div>
-            </div>
-        </div>
-
-        <!-- 音乐播放器 -->
-        <div class="music-player">
-            <div class="player-content">
-                <!-- 左侧：歌曲图片 25% -->
-                <div class="player-image">
-                    <img id="albumArt" src="./images/1.png" alt="Album Art">
-                </div>
-
-                <!-- 右侧：75% -->
-                <div class="player-right">
-                    <!-- 歌词显示区域 -->
-                    <div class="lyrics-display">
-                        <div class="lyric-line" id="lyricLine">暂无歌词</div>
-                    </div>
-
-                    <!-- 进度条 -->
-                    <div class="progress-container">
-                        <span class="time current-time">0:00</span>
-                        <input type="range" class="progress-bar" id="progressBar" min="0" max="100" value="0">
-                        <span class="time total-time">0:00</span>
-                    </div>
-
-                    <!-- 控制按钮 -->
-                    <div class="controls">
-                        <button class="control-btn" id="prevBtn" title="上一首">⏮ 上一首</button>
-                        <button class="control-btn play-btn" id="playBtn" title="播放/暂停">▶ 播放</button>
-                        <button class="control-btn" id="nextBtn" title="下一首">下一首 ⏭</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="music-player">
+        <h1>Music Player</h1>
+        <div id="upload-area">Drag & Drop Music Files Here</div>
+        <ul id="music-list"></ul>
+        <audio controls id="audio-player">
+            <source id="audio-source" src="" type="audio/mpeg">
+            Your browser does not support the audio tag.
+        </audio>
     </div>
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const musicList = document.getElementById('music-list');
+        const audioPlayer = document.getElementById('audio-player');
+        const audioSource = document.getElementById('audio-source');
 
-    <!-- 隐藏的音频元素 -->
-    <audio id="audio"></audio>
+        uploadArea.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            uploadArea.style.borderColor = '#000';
+        });
 
-    <script src="./player.js"></script>
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#ccc';
+        });
+
+        uploadArea.addEventListener('drop', (event) => {
+            event.preventDefault();
+            uploadArea.style.borderColor = '#ccc';
+            const files = event.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        function handleFiles(files) {
+            [...files].forEach(file => {
+                if (file.type.startsWith('audio/')) {
+                    addToMusicList(file);
+                }
+            });
+        }
+
+        function addToMusicList(file) {
+            const listItem = document.createElement('li');
+            listItem.textContent = file.name;
+            listItem.addEventListener('click', () => {
+                playMusic(file);
+            });
+            musicList.appendChild(listItem);
+        }
+
+        function playMusic(file) {
+            const objectURL = URL.createObjectURL(file);
+            audioSource.src = objectURL;
+            audioPlayer.play();
+        }
+    </script>
 </body>
 </html>
