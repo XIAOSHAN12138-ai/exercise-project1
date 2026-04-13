@@ -3,16 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Music Player</title>
     <link rel="stylesheet" href="./tran.css">
 </head>
 <body>
-    <div class="shell">
-        <div class="content">
-            <div class="item"></div>
-            <div class="item"></div>
-            <div class="item"></div>
+    <div class="container">
+        <!-- 图片轮播 -->
+        <div class="shell">
+            <div class="content">
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+            </div>
+        </div>
+
+        <!-- 音乐播放器 -->
+        <div class="music-player">
+            <div class="player-content">
+                <!-- 左侧：歌曲图片 25% -->
+                <div class="player-image">
+                    <img id="albumArt" src="./images/1.png" alt="Album Art">
+                </div>
+
+                <!-- 右侧：75% -->
+                <div class="player-right">
+                    <!-- 歌词显示区域 -->
+                    <div class="lyrics-display">
+                        <div class="lyric-line" id="lyricLine">暂无歌词</div>
+                    </div>
+
+                    <!-- 进度条 -->
+                    <div class="progress-container">
+                        <span class="time current-time">0:00</span>
+                        <input type="range" class="progress-bar" id="progressBar" min="0" max="100" value="0">
+                        <span class="time total-time">0:00</span>
+                    </div>
+
+                    <!-- 控制按钮 -->
+                    <div class="controls">
+                        <button class="control-btn" id="prevBtn" title="上一首">⏮ 上一首</button>
+                        <button class="control-btn play-btn" id="playBtn" title="播放/暂停">▶ 播放</button>
+                        <button class="control-btn" id="nextBtn" title="下一首">下一首 ⏭</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- 隐藏的音频元素 -->
+    <audio id="audio"></audio>
+
+    <script src="./player.js"></script>
 </body>
 </html>
